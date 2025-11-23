@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Release Control • Jae-P Management Suite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- PayPal SDK (loaded once) -->
+  <script 
+    src="https://www.paypal.com/sdk/js?client-id=BAAu0L68_WsutsEZPeSUsT3-GJhirxs5vsMPOPzKh8kzpBjlYKk9Zso3Tm0BDlIowdz_kxxvnFBvfkPstA&components=hosted-buttons&enable-funding=venmo&currency=USD">
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">JP</div>
+        <div class="brand-text">
+          <h1>Release Control</h1>
+          <p>Majestad Music Suite</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboardView">
+          <span class="nav-dot"></span> Dashboard
+        </button>
+        <button class="nav-item" data-view="releasesView">
+          <span class="nav-dot"></span> Releases
+        </button>
+        <button class="nav-item" data-view="companyView">
+          <span class="nav-dot"></span> Business & Publishing
+        </button>
+        <button class="nav-item" data-view="contractsView">
+          <span class="nav-dot"></span> Contracts
+        </button>
+        <button class="nav-item" data-view="royaltiesView">
+          <span class="nav-dot"></span> Royalties & Admin
+        </button>
+        <button class="nav-item" data-view="consultingView">
+          <span class="nav-dot"></span> Consulting & Management
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>Built for <strong>Jae-P</strong> • v1.5 (Pro Suite)</p>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div>
+          <h2 id="viewTitle">Dashboard</h2>
+          <p id="viewSubtitle">Overview of all your releases and business progress.</p>
+        </div>
+        <div class="topbar-actions">
+          <button id="newReleaseBtn" class="btn primary">+ New Release</button>
+        </div>
+      </header>
+
+      <!-- Views -->
+
+      <!-- Dashboard -->
+      <section id="dashboardView" class="view active">
+        <div class="card intro-card">
+          <h3>Welcome to Release Control</h3>
+          <p class="intro-lead">
+            Think of this like walking into a tight, professional label manager’s office — 
+            everything for your music business laid out on the desk: clear, calm, and under control.
+          </p>
+          <div class="intro-grid">
+            <div>
+              <h4>What this app is for</h4>
+              <ul>
+                <li>Indie artists who want to work like a real label.</li>
+                <li>Start-up record labels building their first catalog.</li>
+                <li>Managers and consultants keeping multiple releases on track.</li>
+              </ul>
+            </div>
+            <div>
+              <h4>What it helps you do</h4>
+              <ul>
+                <li>See all releases and business tasks in one place.</li>
+                <li>Follow step-by-step checklists so nothing is missed.</li>
+                <li>Track what’s done, what’s pending, and who needs to move next.</li>
+              </ul>
+            </div>
+            <div>
+              <h4>How to use it</h4>
+              <ul>
+                <li>Start in <strong>Releases</strong> for each song, EP, or album.</li>
+                <li>Use <strong>Business & Publishing</strong> to build your company + PRO + admin.</li>
+                <li>Use <strong>Contracts</strong> and <strong>Royalties & Admin</strong> as your label-control checklist.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid stats-grid">
+          <div class="card stat-card">
+            <p class="stat-label">Total Releases</p>
+            <p class="stat-value" id="statTotalReleases">0</p>
+          </div>
+          <div class="card stat-card">
+            <p class="stat-label">In Progress</p>
+            <p class="stat-value" id="statInProgress">0</p>
+          </div>
+          <div class="card stat-card">
+            <p class="stat-label">Completed</p>
+            <p class="stat-value" id="statCompleted">0</p>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3>Releases Overview</h3>
+          <p>Quick glance at everything on your roster. Click one to jump into full details in the Releases view.</p>
+        </div>
+
+        <div id="dashboardReleaseList" class="release-list"></div>
+
+        <div id="emptyState" class="empty-state hidden">
+          <p>No releases yet.</p>
+          <button class="btn ghost" id="emptyNewReleaseBtn">Create your first release</button>
+        </div>
+
+        <!-- Ad / Sponsor Slot -->
+        <div class="card ad-slot">
+          <div class="ad-slot-header">
+            <span class="ad-label">Sponsored • Ad Space</span>
+          </div>
+          <div class="ad-box">
+            <p>Future space for Google Ads, sponsors, or partner brands (music-related).</p>
+            <!--
+              When you're ready to plug in Google AdSense, you can place their script here.
+              Example (placeholder, NOT active):
+              <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-client="YOUR-AD-CLIENT-ID"
+                   data-ad-slot="YOUR-AD-SLOT-ID"
+                   data-ad-format="auto"></ins>
+              <script>
+                   (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Releases view (table-style + details) -->
+      <section id="releasesView" class="view">
+        <div class="section-header">
+          <h3>All Releases</h3>
+          <p>Organize your catalog for you and your label. Click a row to open the release drawer below.</p>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="table" id="releasesTable">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Release Date</th>
+                <th>Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- JS will inject rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Business & Publishing -->
+      <section id="companyView" class="view">
+        <div class="section-header">
+          <h3>Business & Publishing Setup</h3>
+          <p>Step-by-step roadmap from idea to full, legit structure.</p>
+        </div>
+
+        <div class="grid two-columns">
+          <div class="card">
+            <h4>1) Business Setup (Company / Tax / Bank)</h4>
+            <ul class="checklist" id="bizCompanyProfile"></ul>
+            <p class="helper-text">
+              This turns your art from hobby into a real company with its own structure and bank account.
+            </p>
+          </div>
+
+          <div class="card">
+            <h4>2) Publishing & PRO</h4>
+            <ul class="checklist" id="bizPublishingEntity"></ul>
+            <p class="helper-text">
+              This is where your songs are registered on paper: writer, publisher, and admin.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Notes</h4>
+          <p class="helper-text">
+            Use these steps as the foundation for every artist or label you manage. Once these are solid,
+            every release you push through the system will have something real behind it.
+          </p>
+        </div>
+      </section>
+
+      <!-- Contracts -->
+      <section id="contractsView" class="view">
+        <div class="section-header">
+          <h3>Contracts & Agreements</h3>
+          <p>Lock in splits, credits and expectations before release.</p>
+        </div>
+
+        <div class="grid two-columns">
+          <div class="card">
+            <h4>Core Agreements</h4>
+            <ul class="checklist" id="bizContractsCore"></ul>
+          </div>
+          <div class="card">
+            <h4>Next Level</h4>
+            <ul class="checklist" id="bizContractsAdvanced"></ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="helper-text">
+            Future version: this module will generate pre-filled contract text from
+            your stored data (names, splits, dates) so you can export and get it
+            reviewed by a lawyer.
+          </p>
+        </div>
+      </section>
+
+      <!-- Royalties -->
+      <section id="royaltiesView" class="view">
+        <div class="section-header">
+          <h3>Royalties & Admin</h3>
+          <p>Make sure every stream and spin knows where to send the money.</p>
+        </div>
+
+        <div class="grid two-columns">
+          <div class="card">
+            <h4>Accounts to Set Up</h4>
+            <ul class="checklist" id="bizRoyaltiesAccounts"></ul>
+          </div>
+          <div class="card">
+            <h4>Per-Release Admin Checklist</h4>
+            <ul class="checklist" id="bizRoyaltiesPerRelease"></ul>
+            <p class="helper-text">
+              These are global reminders that should be done for every release. You can also track per song inside the
+              release details panel.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Consulting & Management -->
+      <section id="consultingView" class="view">
+        <div class="section-header">
+          <h3>Consulting & Management</h3>
+          <p>Hire Jae-P to guide the strategy, keep releases on point, and help build long-term structure.</p>
+        </div>
+
+        <div class="grid two-columns">
+          <div class="card">
+            <h4>1-on-1 Consultation</h4>
+            <p class="helper-text">
+              Get focused time to walk through your releases, business setup, publishing, or royalty questions.
+              Perfect for indie artists and startup labels that want clarity and a real plan.
+            </p>
+            <ul class="helper-list">
+              <li>Music business questions</li>
+              <li>Release planning & timelines</li>
+              <li>Publishing & PRO registrations</li>
+              <li>Distribution & metadata strategy</li>
+            </ul>
+            <p class="helper-text"><strong>Rate:</strong> $100 per session (about 1 to 1.5 hours).</p>
+            <div class="paypal-block">
+              <p class="helper-text">Pay securely with PayPal:</p>
+              <div id="paypal-container-consultation"></div>
+              <script>
+                if (window.paypal && paypal.HostedButtons) {
+                  paypal.HostedButtons({
+                    hostedButtonId: "NZTWNUUAG2TRJ",
+                  }).render("#paypal-container-consultation");
+                }
+              </script>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4>Artist / Label Management</h4>
+            <p class="helper-text">
+              For artists and labels that want ongoing help: strategy, structure, and execution. 
+              You stay creative; the backend stays organized.
+            </p>
+            <ul class="helper-list">
+              <li>Monthly release planning & tracking</li>
+              <li>Coordination with designers, producers, publicists</li>
+              <li>Help with publishing, copyright and royalties</li>
+              <li>Accountability so nothing falls through the cracks</li>
+            </ul>
+            <p class="helper-text"><strong>Starting at:</strong> $1,000 / month (depending on workload).</p>
+            <div class="paypal-block">
+              <p class="helper-text">
+                Use the same PayPal button to send your first monthly payment or retainer. 
+                We can confirm details together after payment.
+              </p>
+              <div id="paypal-container-management"></div>
+              <script>
+                if (window.paypal && paypal.HostedButtons) {
+                  paypal.HostedButtons({
+                    hostedButtonId: "NZTWNUUAG2TRJ",
+                  }).render("#paypal-container-management");
+                }
+              </script>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Next Steps After Payment</h4>
+          <p class="helper-text">
+            After your payment, you'll be able to confirm your session time or management plan details directly with Jae-P.
+            This app keeps everything structured so every dollar you spend goes into a plan, not chaos.
+          </p>
+        </div>
+      </section>
+
+      <!-- Release details drawer (only used in Releases view now) -->
+      <section id="detailsPanel" class="details-panel hidden">
+        <div class="details-header">
+          <div>
+            <h3 id="detailsTitle">Select a release</h3>
+            <p id="detailsSubtitle"></p>
+          </div>
+          <div class="details-meta">
+            <label class="field-inline">
+              Status
+              <select id="detailsStatusSelect">
+                <option value="In Planning">In Planning</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Ready to Release">Ready to Release</option>
+                <option value="Released">Released</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="details-body">
+          <div class="progress-bar">
+            <div class="progress-bar-inner" id="detailsProgressBar"></div>
+          </div>
+          <p class="progress-label">
+            Overall Progress: <span id="detailsProgressLabel">0%</span>
+          </p>
+
+          <div class="tabs">
+            <button class="tab active" data-tab="tabBasics">Basics</button>
+            <button class="tab" data-tab="tabRights">Rights & Publishing</button>
+            <button class="tab" data-tab="tabDistribution">Distribution</button>
+            <button class="tab" data-tab="tabMarketing">Marketing</button>
+          </div>
+
+          <div class="tab-content active" id="tabBasics">
+            <div class="grid two-columns">
+              <div class="card">
+                <h4>Release Info</h4>
+                <div class="field-group">
+                  <label>Title</label>
+                  <input type="text" id="detailsTitleInput" />
+                </div>
+                <div class="field-group">
+                  <label>Artist</label>
+                  <input type="text" id="detailsArtistInput" />
+                </div>
+                <div class="field-row">
+                  <div class="field-group">
+                    <label>Type</label>
+                    <select id="detailsTypeSelect">
+                      <option value="Single">Single</option>
+                      <option value="EP">EP</option>
+                      <option value="Album">Album</option>
+                    </select>
+                  </div>
+                  <div class="field-group">
+                    <label>Release Date</label>
+                    <input type="date" id="detailsDateInput" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <h4>Basics Checklist</h4>
+                <ul class="checklist" id="checklistBasics"></ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tabRights">
+            <div class="grid two-columns">
+              <div class="card">
+                <h4>Rights & Credits</h4>
+                <p class="helper-text">
+                  Use this space to make sure splits, credits and registrations are covered.
+                </p>
+                <ul class="checklist" id="checklistRights"></ul>
+              </div>
+              <div class="card">
+                <h4>Codes & IDs (notes)</h4>
+                <p class="helper-text">
+                  In a later version we can add real fields here. For now, you can track:
+                </p>
+                <ul class="checklist static">
+                  <li>ISRC per recording.</li>
+                  <li>UPC/EAN for the product (single/EP/album).</li>
+                  <li>ISWC (composition ID from PRO).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tabDistribution">
+            <div class="grid two-columns">
+              <div class="card">
+                <h4>Distribution Checklist</h4>
+                <ul class="checklist" id="checklistDistribution"></ul>
+              </div>
+              <div class="card">
+                <h4>Distribution Notes</h4>
+                <p class="helper-text">
+                  Remember to set your distributor (CD Baby, DistroKid, TuneCore, UnitedMasters, etc.),
+                  territories and delivery deadline (7–14 days before release).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tabMarketing">
+            <div class="grid two-columns">
+              <div class="card">
+                <h4>Marketing Checklist</h4>
+                <ul class="checklist" id="checklistMarketing"></ul>
+              </div>
+              <div class="card">
+                <h4>Content Ideas</h4>
+                <p class="helper-text">
+                  Plan reels, shorts, TikToks, visualizers, and clips behind the scenes.
+                  Future version: timeline calendar per release.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Modal: New Release -->
+      <div id="releaseModal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+          <h3>New Release</h3>
+          <form id="releaseForm">
+            <div class="field-group">
+              <label>Title</label>
+              <input type="text" id="formTitle" required />
+            </div>
+            <div class="field-group">
+              <label>Artist</label>
+              <input type="text" id="formArtist" placeholder="Jae-P, ft. ..." required />
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label>Type</label>
+                <select id="formType">
+                  <option value="Single">Single</option>
+                  <option value="EP">EP</option>
+                  <option value="Album">Album</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Status</label>
+                <select id="formStatus">
+                  <option value="In Planning">In Planning</option>
+                  <option value="In Progress" selected>In Progress</option>
+                  <option value="Ready to Release">Ready to Release</option>
+                  <option value="Released">Released</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Target Release Date</label>
+              <input type="date" id="formDate" />
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn ghost" id="cancelModalBtn">Cancel</button>
+              <button type="submit" class="btn primary">Create Release</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
